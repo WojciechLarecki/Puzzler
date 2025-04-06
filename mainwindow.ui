@@ -6,20 +6,420 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>350</width>
+    <height>263</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Puzzler</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_6">
+    <item>
+     <widget class="QStackedWidget" name="stackedWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="homePage">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QPushButton" name="playAsGuestButton">
+          <property name="text">
+           <string>Zagraj jako gość</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="loginButton">
+          <property name="text">
+           <string>Zaloguj się</string>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="exitButton">
+          <property name="text">
+           <string>Opóść program</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="gamePage">
+       <layout class="QVBoxLayout" name="verticalLayout_9">
+        <item>
+         <layout class="QHBoxLayout" name="helpGameHorizontalLayout">
+          <item>
+           <widget class="QPushButton" name="solutionGameButton">
+            <property name="text">
+             <string>rozwiązanie</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="stepGameButton">
+            <property name="text">
+             <string>krok</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="hintGameButton">
+            <property name="text">
+             <string>wskazówka</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="infoGameButton">
+            <property name="text">
+             <string>Info</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout"/>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="timerGameHorizontalLayout">
+          <item>
+           <widget class="QTimeEdit" name="timeEdit">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+            </property>
+            <property name="accelerated">
+             <bool>false</bool>
+            </property>
+            <property name="displayFormat">
+             <string>HH:mm:ss</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton">
+            <property name="text">
+             <string>Zatrzymaj grę</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="endGameHorizontalLayout">
+          <item>
+           <widget class="QPushButton" name="cancelGameButton">
+            <property name="text">
+             <string>Przerwij grę</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="resetGameButton">
+            <property name="text">
+             <string>Resetuj grę</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="manageAccountsPage">
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <widget class="QTableWidget" name="manageAccountsTableWidget">
+          <column>
+           <property name="text">
+            <string>Rola</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Nazwa</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="editManageAccountsButton">
+          <property name="text">
+           <string>Edytuj konto</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="deleteManageAccountsButton">
+          <property name="text">
+           <string>Usuń konto</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="returnManageAccountsButton">
+          <property name="text">
+           <string>Cofnij</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="updateAccountPage">
+       <layout class="QVBoxLayout" name="verticalLayout_7">
+        <item>
+         <layout class="QFormLayout" name="accountFormUpdateAccountLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="accountNameUpdateAccountLabel">
+            <property name="text">
+             <string>Nazwa:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="accountNameUpdateAccountLineEdit"/>
+          </item>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="accountUpdateHorizontalLayout">
+            <item>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="playerRoleUpdateAccountRadioButton">
+              <property name="text">
+               <string>player</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="adminRoleAccoutUpdateRadioButton">
+              <property name="text">
+               <string>admin</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="accountRoleUpdateAccountLabel">
+            <property name="text">
+             <string>Rola:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="createAccountUpdateAccountButton">
+          <property name="text">
+           <string>Zaktualizuj konto</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="returnUpdateAccountButton">
+          <property name="text">
+           <string>Cofnij</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="createAccountPage">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <layout class="QFormLayout" name="accountFormCreateAccountLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="accountNameAccountCreateLabel">
+            <property name="text">
+             <string>Nazwa:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="accountNameAccountCreateLineEdit"/>
+          </item>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="accountCreateHorizontalLayout">
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="playerRoleRadioButton">
+              <property name="text">
+               <string>player</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="adminRoleRadioButton">
+              <property name="text">
+               <string>admin</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="accountRoleAccountCreateLabel">
+            <property name="text">
+             <string>Rola:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="createAccountCreateAccountButton">
+          <property name="text">
+           <string>Stwórz konto</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="returnUpsertAccountButton">
+          <property name="text">
+           <string>Cofnij</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="accountsPage">
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QTableWidget" name="accountsTableWidget">
+          <column>
+           <property name="text">
+            <string>Rola</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Nazwa</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="loginAccountsButton">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Zaloguj</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="createAccountAccountsButton">
+          <property name="text">
+           <string>Stwórz konto</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="returnAccountsButton">
+          <property name="text">
+           <string>Cofnij</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="playerPage">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QPushButton" name="playAsPlayerButton">
+          <property name="text">
+           <string>Zagraj</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="showScoresButton">
+          <property name="text">
+           <string>Wyświetl wyniki</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="retrunButton">
+          <property name="text">
+           <string>Cofnij</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="adminPage">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QPushButton" name="playAdminButton">
+          <property name="text">
+           <string>Zagraj</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="showScoresAdminButton">
+          <property name="text">
+           <string>Wyświetl wyniki</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="showAccountsAdminButton">
+          <property name="text">
+           <string>Wyświetl konta graczy</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="returnAdminButton">
+          <property name="text">
+           <string>Cofnij</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>350</width>
      <height>18</height>
     </rect>
    </property>
