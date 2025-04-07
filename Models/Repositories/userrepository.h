@@ -1,10 +1,16 @@
 #ifndef USERREPOSITORY_H
 #define USERREPOSITORY_H
 
-class userrepository
+#include "../Entities/user.h"
+#include <vector>
+
+class UserRepository
 {
 public:
-    userrepository();
+    UserRepository();
+
+    void Add(User user);
+    std::vector<User> GetAll();
 };
 
 #endif // USERREPOSITORY_H

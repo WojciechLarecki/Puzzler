@@ -1,10 +1,19 @@
 #ifndef USER_H
 #define USER_H
 
-class User
-{
+#include <string>
+
+class User {
+private:
+    std::string _name;
+    int _role;
+
 public:
-    User();
+    std::string getName() const;
+    void setName(const std::string& newName);
+
+    int getRole() const;
+    void setRole(int newRole);
 };
 
 #endif // USER_H
