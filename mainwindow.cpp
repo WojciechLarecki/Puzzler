@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 #include <QMessageBox>
 #include "./Controllers/databasecontroller.h"
+#include "./Controllers/usercontroller.h"
 
 #define HOME_PAGE 0
 #define GAME_PAGE 1
@@ -52,6 +53,7 @@ void MainWindow::on_exitButton_clicked()
 
 void MainWindow::on_loginButton_clicked()
 {
+    refreshAccountsTable();
     ui->stackedWidget->setCurrentIndex(ACCOUNTS_PAGE);
 }
 
@@ -213,4 +215,28 @@ void MainWindow::on_customDifficultyButton_clicked()
 void MainWindow::on_returnDifficultyButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(HOME_PAGE); // lub PLAYER_PAGE/ADMIN_PAGE zależnie od ścieżki
+}
+
+//-------------STATE METHODS---------
+void MainWindow::refreshAccountsTable() {
+    ui->accountsTableWidget->clearContents();
+    ui->accountsTableWidget->setRowCount(0);
+
+    UserController userController;
+    std::vector<User> users = userController.getUsers();
+
+    for (const User& user : users) {
+        int currentRow = ui->accountsTableWidget->rowCount();
+        ui->accountsTableWidget->insertRow(currentRow);
+
+        QTableWidgetItem* idItem = new QTableWidgetItem(QString::number(user.getId()));
+        QTableWidgetItem* nameItem = new QTableWidgetItem(user.getName());
+        QTableWidgetItem* roleItem = new QTableWidgetItem(user.getRole() == 0 ? "Gracz" : "Admin");
+
+        ui->accountsTableWidget->setItem(currentRow, 0, idItem);
+        ui->accountsTableWidget->setItem(currentRow, 1, nameItem);
+        ui->accountsTableWidget->setItem(currentRow, 2, roleItem);
+    }
+
+    ui->accountsTableWidget->setColumnHidden(0, true);
 }

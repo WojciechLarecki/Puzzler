@@ -3,9 +3,13 @@
 
 #include "../Entities/user.h"
 #include <vector>
+#include <QSqlDatabase>
 
 class UserRepository
 {
+private:
+    QSqlDatabase db;
+
 public:
     UserRepository();
 

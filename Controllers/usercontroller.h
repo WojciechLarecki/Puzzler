@@ -1,10 +1,12 @@
 #ifndef USERCONTROLLER_H
 #define USERCONTROLLER_H
+#include <vector>
+#include "../Models/Entities/user.h"
 
-class usercontroller
+class UserController
 {
 public:
-    usercontroller();
+    std::vector<User> getUsers();
 };
 
 #endif // USERCONTROLLER_H

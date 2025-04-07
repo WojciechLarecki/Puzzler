@@ -1,6 +1,7 @@
 #include "usercontroller.h"
 #include "../Models/Repositories/userrepository.h"
 
-usercontroller::usercontroller() {
-
+std::vector<User> UserController::getUsers() {
+    UserRepository repo;
+    return repo.GetAll();
 }

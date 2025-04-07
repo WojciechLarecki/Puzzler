@@ -1,11 +1,10 @@
 #include "user.h"
 
-// Definicja metod klasy User
-std::string User::getName() const {
+QString User::getName() const {
     return _name;
 }
 
-void User::setName(const std::string& newName) {
+void User::setName(const QString& newName) {
     _name = newName;
 }
 
@@ -15,4 +14,16 @@ int User::getRole() const {
 
 void User::setRole(int newRole) {
     _role = newRole;
+}
+
+int User::getId() const {
+    return _id;
+}
+
+void User::setId(int id) {
+    _id = id;
+}
+
+std::vector<GameResult> User::getGameResults() const {
+    return _gameResults;
 }

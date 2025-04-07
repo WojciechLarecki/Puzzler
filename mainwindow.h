@@ -70,5 +70,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+    void refreshAccountsTable();
 };
 #endif // MAINWINDOW_H

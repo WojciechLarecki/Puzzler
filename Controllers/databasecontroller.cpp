@@ -32,11 +32,10 @@ void DatabaseController::Initialize() {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             userId INTEGER NOT NULL,
             points INTEGER NOT NULL,
-            hintUsed TEXT,
             startDateTime TEXT,
             endDateTime TEXT,
             boardSize INTEGER NOT NULL,
-            FOREIGN KEY(userId) REFERENCES users(id)
+            FOREIGN KEY(userId) REFERENCES Users(id)
         )
     )")) {
         throw std::runtime_error("Error while creating GameResults table: " + query.lastError().text().toStdString());
