@@ -33,6 +33,17 @@ void MainWindow::on_playAsGuestButton_clicked()
     ui->stackedWidget->setCurrentIndex(DIFFICULTY_PAGE);
 }
 
+void MainWindow::on_exitButton_clicked()
+{
+    QApplication::quit();
+}
+
+
+void MainWindow::on_loginButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(ACCOUNTS_PAGE);
+}
+
 // ---------------- ACCOUNTS PAGE ----------------
 void MainWindow::on_loginAccountsButton_clicked()
 {
@@ -43,6 +54,11 @@ void MainWindow::on_loginAccountsButton_clicked()
 void MainWindow::on_createAccountAccountsButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(CREATE_ACCOUNT_PAGE);
+}
+
+void MainWindow::on_returnAccountsButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(HOME_PAGE);
 }
 
 // ---------------- CREATE ACCOUNT PAGE ----------------

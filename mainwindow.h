@@ -20,10 +20,13 @@ public:
 private slots:
     //----------HOME PAGE---------
     void on_playAsGuestButton_clicked();
+    void on_exitButton_clicked();
+    void on_loginButton_clicked();
 
     //----------ACCOUNTS PAGE-------
     void on_loginAccountsButton_clicked();
     void on_createAccountAccountsButton_clicked();
+    void on_returnAccountsButton_clicked();
 
     //----------CREATE ACCOUNT PAGE-------
     void on_createAccountCreateAccountButton_clicked();
