@@ -28,6 +28,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         Controllers/usercontroller.h Controllers/usercontroller.cpp
         Models/Repositories/userrepository.h Models/Repositories/userrepository.cpp
         Models/Repositories/userrepository.h Models/Repositories/userrepository.cpp
+        Controllers/databasecontroller.h Controllers/databasecontroller.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET Puzzler APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include <QMessageBox>
+#include "./Controllers/databasecontroller.h"
+
 #define HOME_PAGE 0
 #define GAME_PAGE 1
 #define MANAGE_ACCOUNTS_PAGE 2
@@ -20,6 +22,15 @@ MainWindow::MainWindow(QWidget *parent)
     ui->accountsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->manageAccountsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     //connect(ui->pushButton_2, &QPushButton::clicked, this, &MainWindow::onButton3Cliecked);
+
+    try {
+        DatabaseController db;
+        db.Initialize();
+    } catch (const std::exception& e) {
+        ui->loginButton->setEnabled(false);
+        QMessageBox::warning(this, "Wystąpił błąd.", "Program nie mógł wczytać bazy danych. Cześć funkcji będzie ograniczona");
+    }
+
 }
 
 MainWindow::~MainWindow()
