@@ -23,6 +23,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(Puzzler
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        Controllers/usercontroller.cpp Models/Entities/user.cpp Models/Repositories/userrepository.cpp
+        Models/Entities/user.h Models/Entities/user.cpp
+        Controllers/usercontroller.h Controllers/usercontroller.cpp
+        Models/Repositories/userrepository.h Models/Repositories/userrepository.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET Puzzler APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
