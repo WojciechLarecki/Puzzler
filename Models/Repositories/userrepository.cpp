@@ -9,13 +9,13 @@ UserRepository::UserRepository() {
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("puzzler.db");
 
-    // Sprawdzenie, czy baza danych jest otwarta
     if (!db.open()) {
-        qDebug() << "Nie udało się połączyć z bazą danych: " << db.lastError().text();
+        qDebug() << "Error while try to open database: " << db.lastError().text();
+        throw std::runtime_error("Error while try to open databases:" + db.lastError().text().toStdString());
     }
 }
 
-void UserRepository::Add(User user) {
+bool UserRepository::Add(User user) {
     QSqlQuery insertQuery;
     insertQuery.prepare("INSERT INTO users (name, role) VALUES (?, ?)");
 
@@ -24,8 +24,11 @@ void UserRepository::Add(User user) {
     insertQuery.addBindValue(user.getRole());
 
     if (!insertQuery.exec()) {
-        qDebug() << "Błąd dodawania użytkownika:" << insertQuery.lastError().text();
+        qDebug() << "Error while inserting users:" << insertQuery.lastError().text();
+        throw std::runtime_error("Error while inserting users:" + insertQuery.lastError().text().toStdString());
     }
+
+    return true;
 }
 
 std::vector<User> UserRepository::GetAll() {
@@ -43,13 +46,9 @@ std::vector<User> UserRepository::GetAll() {
         QString name = selectQuery.value("name").toString();
         int role = selectQuery.value("role").toInt();
 
-        // Tworzymy obiekt User
         User user;
         user.setName(name);
         user.setRole(role);
-
-        // Można też ustawić ID, jeżeli chcesz je przechować w obiekcie User
-        // Zakładając, że masz metodę setId w klasie User
         user.setId(id);
 
         users.push_back(user);
@@ -58,4 +57,34 @@ std::vector<User> UserRepository::GetAll() {
     }
 
     return users;
+}
+
+bool UserRepository::Delete(int id) {
+    QSqlQuery deleteQuery;
+    deleteQuery.prepare("DELETE FROM users WHERE id = ?");
+    deleteQuery.addBindValue(id);
+
+    if (!deleteQuery.exec()) {
+        QString error = deleteQuery.lastError().text();
+        qDebug() << "Error while deleting user:" << error;
+        throw std::runtime_error("Error while deleting user: " + error.toStdString());
+    }
+
+    return true;
+}
+
+bool UserRepository::Update(User newUser) {
+    QSqlQuery updateQuery;
+    updateQuery.prepare("UPDATE users SET name = ?, role = ? WHERE id = ?");
+    updateQuery.addBindValue(newUser.getName());
+    updateQuery.addBindValue(newUser.getRole());
+    updateQuery.addBindValue(newUser.getId());
+
+    if (!updateQuery.exec()) {
+        QString error = updateQuery.lastError().text();
+        qDebug() << "Error while updating user:" << error;
+        throw std::runtime_error("Error while updating user: " + error.toStdString());
+    }
+
+    return true;
 }

@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="homePage">
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -136,6 +136,11 @@
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
          <widget class="QTableWidget" name="manageAccountsTableWidget">
+          <column>
+           <property name="text">
+            <string>Id</string>
+           </property>
+          </column>
           <column>
            <property name="text">
             <string>Rola</string>
@@ -374,6 +379,11 @@
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
          <widget class="QTableWidget" name="accountsTableWidget">
+          <column>
+           <property name="text">
+            <string>Id</string>
+           </property>
+          </column>
           <column>
            <property name="text">
             <string>Rola</string>

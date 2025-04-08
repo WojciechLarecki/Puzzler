@@ -22,6 +22,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->setCurrentIndex(HOME_PAGE);
     ui->accountsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->manageAccountsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+    ui->accountsTableWidget->setColumnHidden(0, true); // hide Id column
+    ui->accountsTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->accountsTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+    connect(ui->accountsTableWidget, &QTableWidget::itemSelectionChanged, this, &MainWindow::onAccountRowSelected);
+
     //connect(ui->pushButton_2, &QPushButton::clicked, this, &MainWindow::onButton3Cliecked);
 
     try {
@@ -53,7 +59,7 @@ void MainWindow::on_exitButton_clicked()
 
 void MainWindow::on_loginButton_clicked()
 {
-    refreshAccountsTable();
+    resetAccountsPageState();
     ui->stackedWidget->setCurrentIndex(ACCOUNTS_PAGE);
 }
 
@@ -77,11 +83,22 @@ void MainWindow::on_returnAccountsButton_clicked()
 // ---------------- CREATE ACCOUNT PAGE ----------------
 void MainWindow::on_createAccountCreateAccountButton_clicked()
 {
-    // dodaj nowe konto do listy
+    User user;
+    user.setName(ui->accountNameAccountCreateLineEdit->text());
+    if (ui->playerRoleRadioButton->isChecked())
+        user.setRole(0);
+    else user.setRole(1);
+
+    UserController controller;
+    controller.AddUser(user);
+
+    refreshAccountsTable();
+    jumpTo(ACCOUNTS_PAGE);
 }
 
 void MainWindow::on_returnUpsertAccountButton_clicked()
 {
+    refreshAccountsTable();
     ui->stackedWidget->setCurrentIndex(ACCOUNTS_PAGE);
 }
 
@@ -218,6 +235,12 @@ void MainWindow::on_returnDifficultyButton_clicked()
 }
 
 //-------------STATE METHODS---------
+void MainWindow::resetAccountsPageState()
+{
+    refreshAccountsTable();
+    ui->loginAccountsButton->setEnabled(false);
+}
+
 void MainWindow::refreshAccountsTable() {
     ui->accountsTableWidget->clearContents();
     ui->accountsTableWidget->setRowCount(0);
@@ -234,9 +257,16 @@ void MainWindow::refreshAccountsTable() {
         QTableWidgetItem* roleItem = new QTableWidgetItem(user.getRole() == 0 ? "Gracz" : "Admin");
 
         ui->accountsTableWidget->setItem(currentRow, 0, idItem);
-        ui->accountsTableWidget->setItem(currentRow, 1, nameItem);
-        ui->accountsTableWidget->setItem(currentRow, 2, roleItem);
+        ui->accountsTableWidget->setItem(currentRow, 1, roleItem);
+        ui->accountsTableWidget->setItem(currentRow, 2, nameItem);
     }
+}
 
-    ui->accountsTableWidget->setColumnHidden(0, true);
+void MainWindow::jumpTo(int pageIndex)
+{
+    ui->stackedWidget->setCurrentIndex(pageIndex);
+}
+
+void MainWindow::onAccountRowSelected() {
+    ui->loginAccountsButton->setEnabled(true);
 }

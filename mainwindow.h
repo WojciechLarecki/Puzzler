@@ -27,6 +27,7 @@ private slots:
     void on_loginAccountsButton_clicked();
     void on_createAccountAccountsButton_clicked();
     void on_returnAccountsButton_clicked();
+    void onAccountRowSelected();
 
     //----------CREATE ACCOUNT PAGE-------
     void on_createAccountCreateAccountButton_clicked();
@@ -70,7 +71,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-
+    void jumpTo(int pageIndex);
     void refreshAccountsTable();
+    void resetAccountsPageState();
 };
 #endif // MAINWINDOW_H

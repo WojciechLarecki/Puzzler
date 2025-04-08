@@ -13,8 +13,10 @@ private:
 public:
     UserRepository();
 
-    void Add(User user);
+    bool Add(User user);
     std::vector<User> GetAll();
+    bool Delete(int id);
+    bool Update(User newUser);
 };
 
 #endif // USERREPOSITORY_H
