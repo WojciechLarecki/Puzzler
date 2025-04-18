@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStack>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -71,8 +72,12 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QStack<int> pageStack;
+
     void jumpTo(int pageIndex);
     void refreshAccountsTable();
     void resetAccountsPageState();
+    void validateCreateAccountForm();
+    void goBack();
 };
 #endif // MAINWINDOW_H

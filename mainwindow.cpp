@@ -5,14 +5,15 @@
 #include "./Controllers/usercontroller.h"
 
 #define HOME_PAGE 0
-#define GAME_PAGE 1
-#define MANAGE_ACCOUNTS_PAGE 2
-#define UPDATE_ACCOUNT_PAGE 3
-#define DIFFICULTY_PAGE 4
-#define CREATE_ACCOUNT_PAGE 5
-#define ACCOUNTS_PAGE 6
-#define PLAYER_PAGE 7
-#define ADMIN_PAGE 8
+#define GAME_RESULTS_PAGE 1
+#define GAME_PAGE 2
+#define MANAGE_ACCOUNTS_PAGE 3
+#define UPDATE_ACCOUNT_PAGE 4
+#define DIFFICULTY_PAGE 5
+#define CREATE_ACCOUNT_PAGE 6
+#define ACCOUNTS_PAGE 7
+#define PLAYER_PAGE 8
+#define ADMIN_PAGE 9
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -28,7 +29,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->accountsTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     connect(ui->accountsTableWidget, &QTableWidget::itemSelectionChanged, this, &MainWindow::onAccountRowSelected);
 
+
+    connect(ui->accountNameAccountCreateLineEdit, &QLineEdit::textChanged, this, &MainWindow::validateCreateAccountForm);
+    connect(ui->playerRoleRadioButton, &QRadioButton::toggled, this, &MainWindow::validateCreateAccountForm);
+    connect(ui->adminRoleRadioButton, &QRadioButton::toggled, this, &MainWindow::validateCreateAccountForm);
     //connect(ui->pushButton_2, &QPushButton::clicked, this, &MainWindow::onButton3Cliecked);
+
+    connect(ui->returnGameResultsButton, &QPushButton::clicked, this, &MainWindow::goBack);
 
     try {
         DatabaseController db;
@@ -66,18 +73,39 @@ void MainWindow::on_loginButton_clicked()
 // ---------------- ACCOUNTS PAGE ----------------
 void MainWindow::on_loginAccountsButton_clicked()
 {
-    // zaloguj wybranego użytkownika
-    // potem np. ui->stackedWidget->setCurrentIndex(PLAYER_PAGE); lub ADMIN_PAGE
+    QList<QTableWidgetItem*> selectedItems = ui->accountsTableWidget->selectedItems();
+    if (selectedItems.isEmpty()) {
+        QMessageBox::warning(this, "Błąd", "Nie wybrano żadnego użytkownika.");
+        return;
+    }
+
+    int selectedRow = ui->accountsTableWidget->currentRow();
+    QTableWidgetItem* roleItem = ui->accountsTableWidget->item(selectedRow, 1); // id (0), role (1), name (2)
+
+    if (!roleItem) {
+        QMessageBox::critical(this, "Błąd", "Nie udało się odczytać roli użytkownika.");
+        return;
+    }
+
+    QString roleText = roleItem->text();
+
+    if (roleText == "Gracz") {
+        jumpTo(PLAYER_PAGE);
+    } else if (roleText == "Admin") {
+        jumpTo(ADMIN_PAGE);
+    } else {
+        QMessageBox::warning(this, "Błąd", "Nieznana rola użytkownika.");
+    }
 }
 
 void MainWindow::on_createAccountAccountsButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(CREATE_ACCOUNT_PAGE);
+    jumpTo(CREATE_ACCOUNT_PAGE);
 }
 
 void MainWindow::on_returnAccountsButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(HOME_PAGE);
+    goBack();
 }
 
 // ---------------- CREATE ACCOUNT PAGE ----------------
@@ -99,13 +127,13 @@ void MainWindow::on_createAccountCreateAccountButton_clicked()
 void MainWindow::on_returnUpsertAccountButton_clicked()
 {
     refreshAccountsTable();
-    ui->stackedWidget->setCurrentIndex(ACCOUNTS_PAGE);
+    goBack();
 }
 
 // ---------------- GAME PAGE ----------------
 void MainWindow::on_cancelGameButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(HOME_PAGE); // lub DIFFICULTY_PAGE, zależnie od kontekstu
+    jumpTo(HOME_PAGE); // lub DIFFICULTY_PAGE, zależnie od kontekstu
 }
 
 void MainWindow::on_resetGameButton_clicked()
@@ -141,55 +169,75 @@ void MainWindow::on_pushButton_clicked()
 // ---------------- PLAYER PAGE ----------------
 void MainWindow::on_playAsPlayerButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(DIFFICULTY_PAGE);
+    jumpTo(DIFFICULTY_PAGE);
 }
 
 void MainWindow::on_showScoresButton_clicked()
 {
-    // pokaż wyniki
+    ui->deleteGameResultsButton->setVisible(false);
+    jumpTo(GAME_RESULTS_PAGE);
 }
 
 void MainWindow::on_retrunButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(HOME_PAGE);
+    goBack();
 }
 
 // ---------------- ADMIN PAGE ----------------
 void MainWindow::on_playAdminButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(DIFFICULTY_PAGE);
+    jumpTo(DIFFICULTY_PAGE);
 }
 
 void MainWindow::on_showScoresAdminButton_clicked()
 {
-    // pokaż wyniki dla admina
+    jumpTo(GAME_RESULTS_PAGE);
 }
 
 void MainWindow::on_showAccountsAdminButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(MANAGE_ACCOUNTS_PAGE);
+    ui->deleteGameResultsButton->setVisible(true);
+    jumpTo(MANAGE_ACCOUNTS_PAGE);
 }
 
 void MainWindow::on_returnAdminButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(HOME_PAGE);
+    goBack();
 }
 
 // ---------------- MANAGE ACCOUNTS PAGE ----------------
 void MainWindow::on_editManageAccountsButton_clicked()
 {
     // edytuj wybrane konto i przejdź do UPDATE_ACCOUNT_PAGE
-    ui->stackedWidget->setCurrentIndex(UPDATE_ACCOUNT_PAGE);
+    jumpTo(UPDATE_ACCOUNT_PAGE);
 }
 
 void MainWindow::on_deleteManageAccountsButton_clicked()
 {
-    // usuń wybrane konto
+    QList<QTableWidgetItem*> selectedItems = ui->accountsTableWidget->selectedItems();
+    if (selectedItems.isEmpty()) {
+        QMessageBox::warning(this, "Błąd", "Nie wybrano żadnego użytkownika.");
+        return;
+    }
+
+    int selectedRow = ui->accountsTableWidget->currentRow();
+    QTableWidgetItem* userIdItem = ui->accountsTableWidget->item(selectedRow, 0);
+
+    if (!userIdItem) {
+        QMessageBox::critical(this, "Błąd", "Nie udało się wyniku gry.");
+        return;
+    }
+
+    int userId = userIdItem->text().toInt();
+
+    // TODO dorobić usuwanie konta
+    UserController userController;
+    userController.DeleteUser(userId);
 }
 
 void MainWindow::on_returnManageAccountsButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(ADMIN_PAGE);
+    goBack();
 }
 
 // ---------------- UPDATE ACCOUNT PAGE ----------------
@@ -200,7 +248,7 @@ void MainWindow::on_createAccountUpdateAccountButton_clicked()
 
 void MainWindow::on_returnUpdateAccountButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(MANAGE_ACCOUNTS_PAGE);
+    goBack();
 }
 
 // ---------------- DIFFICULTY PAGE ----------------
@@ -231,10 +279,10 @@ void MainWindow::on_customDifficultyButton_clicked()
 
 void MainWindow::on_returnDifficultyButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(HOME_PAGE); // lub PLAYER_PAGE/ADMIN_PAGE zależnie od ścieżki
+    goBack();
 }
 
-//-------------STATE METHODS---------
+//-------------ACCOUNTS PAGE METHODS---------
 void MainWindow::resetAccountsPageState()
 {
     refreshAccountsTable();
@@ -262,11 +310,35 @@ void MainWindow::refreshAccountsTable() {
     }
 }
 
-void MainWindow::jumpTo(int pageIndex)
-{
-    ui->stackedWidget->setCurrentIndex(pageIndex);
-}
-
 void MainWindow::onAccountRowSelected() {
     ui->loginAccountsButton->setEnabled(true);
+}
+
+void MainWindow::validateCreateAccountForm()
+{
+    QString name = ui->accountNameAccountCreateLineEdit->text();
+    bool isNameValid = !name.isEmpty() && name.length() <= 50;
+    bool isRoleSelected = ui->playerRoleRadioButton->isChecked() || ui->adminRoleRadioButton->isChecked();
+
+    ui->createAccountCreateAccountButton->setEnabled(isNameValid && isRoleSelected);
+}
+
+// --------------UTILITY METHODS------------
+void MainWindow::jumpTo(int pageIndex)
+{
+    int currentIndex = ui->stackedWidget->currentIndex();
+    if (currentIndex != pageIndex) {
+        pageStack.push(currentIndex); // save page before jumping into next
+        ui->stackedWidget->setCurrentIndex(pageIndex);
+    }
+}
+
+void MainWindow::goBack()
+{
+    if (!pageStack.isEmpty()) {
+        int previousPage = pageStack.pop();
+        ui->stackedWidget->setCurrentIndex(previousPage);
+    } else {
+        ui->stackedWidget->setCurrentIndex(HOME_PAGE);
+    }
 }

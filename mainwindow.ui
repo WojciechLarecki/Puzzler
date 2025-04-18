@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>5</number>
+       <number>7</number>
       </property>
       <widget class="QWidget" name="homePage">
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -43,6 +43,27 @@
          <widget class="QPushButton" name="exitButton">
           <property name="text">
            <string>Opuść program</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="gameResultsPage">
+       <layout class="QVBoxLayout" name="verticalLayout_11">
+        <item>
+         <widget class="QTableWidget" name="gameResultsTableWidget"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="deleteGameResultsButton">
+          <property name="text">
+           <string>Usuń wynik</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="returnGameResultsButton">
+          <property name="text">
+           <string>Cofnij</string>
           </property>
          </widget>
         </item>
@@ -151,13 +172,6 @@
             <string>Nazwa</string>
            </property>
           </column>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="editManageAccountsButton">
-          <property name="text">
-           <string>Edytuj konto</string>
-          </property>
          </widget>
         </item>
         <item>
@@ -361,6 +375,12 @@
         </item>
         <item>
          <widget class="QPushButton" name="createAccountCreateAccountButton">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Dodaj nazwę i rolę gracza by stworzyć konto.</string>
+          </property>
           <property name="text">
            <string>Stwórz konto</string>
           </property>
