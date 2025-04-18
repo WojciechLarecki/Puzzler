@@ -58,6 +58,8 @@ private slots:
     void on_editManageAccountsButton_clicked();
     void on_deleteManageAccountsButton_clicked();
     void on_returnManageAccountsButton_clicked();
+    void onManageAccountsRowSelected();
+    void refreshManageAccountsTable();
 
     //----------UPDATE ACCOUNT PAGE----------
     void on_createAccountUpdateAccountButton_clicked();

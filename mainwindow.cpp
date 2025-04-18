@@ -21,13 +21,20 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(HOME_PAGE);
-    ui->accountsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->manageAccountsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
+    // accountsTableWidget
+    ui->accountsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->accountsTableWidget->setColumnHidden(0, true); // hide Id column
     ui->accountsTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->accountsTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     connect(ui->accountsTableWidget, &QTableWidget::itemSelectionChanged, this, &MainWindow::onAccountRowSelected);
+
+    // manageAccountsTableWidget
+    ui->manageAccountsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->manageAccountsTableWidget->setColumnHidden(0, true); // hide Id column
+    ui->manageAccountsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->manageAccountsTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+    connect(ui->manageAccountsTableWidget, &QTableWidget::itemSelectionChanged, this, &MainWindow::onManageAccountsRowSelected);
 
 
     connect(ui->accountNameAccountCreateLineEdit, &QLineEdit::textChanged, this, &MainWindow::validateCreateAccountForm);
@@ -62,7 +69,6 @@ void MainWindow::on_exitButton_clicked()
 {
     QApplication::quit();
 }
-
 
 void MainWindow::on_loginButton_clicked()
 {
@@ -196,7 +202,9 @@ void MainWindow::on_showScoresAdminButton_clicked()
 
 void MainWindow::on_showAccountsAdminButton_clicked()
 {
-    ui->deleteGameResultsButton->setVisible(true);
+    refreshManageAccountsTable();
+    ui->deleteManageAccountsButton->setEnabled(false);
+    ui->editManageAccountsButton->setEnabled(false);
     jumpTo(MANAGE_ACCOUNTS_PAGE);
 }
 
@@ -214,30 +222,57 @@ void MainWindow::on_editManageAccountsButton_clicked()
 
 void MainWindow::on_deleteManageAccountsButton_clicked()
 {
-    QList<QTableWidgetItem*> selectedItems = ui->accountsTableWidget->selectedItems();
+    QList<QTableWidgetItem*> selectedItems = ui->manageAccountsTableWidget->selectedItems();
     if (selectedItems.isEmpty()) {
         QMessageBox::warning(this, "Błąd", "Nie wybrano żadnego użytkownika.");
         return;
     }
 
-    int selectedRow = ui->accountsTableWidget->currentRow();
-    QTableWidgetItem* userIdItem = ui->accountsTableWidget->item(selectedRow, 0);
-
-    if (!userIdItem) {
-        QMessageBox::critical(this, "Błąd", "Nie udało się wyniku gry.");
-        return;
-    }
+    int selectedRow = ui->manageAccountsTableWidget->currentRow();
+    QTableWidgetItem* userIdItem = ui->manageAccountsTableWidget->item(selectedRow, 0);
 
     int userId = userIdItem->text().toInt();
 
-    // TODO dorobić usuwanie konta
     UserController userController;
     userController.DeleteUser(userId);
+
+    // reset page state
+    refreshManageAccountsTable();
+    ui->deleteManageAccountsButton->setEnabled(false);
+    ui->editManageAccountsButton->setEnabled(false);
+
+    //TODO dodać nie usuwanie swojego konta.
+}
+
+void MainWindow::onManageAccountsRowSelected() {
+    ui->editManageAccountsButton->setEnabled(true);
+    ui->deleteManageAccountsButton->setEnabled(true);
 }
 
 void MainWindow::on_returnManageAccountsButton_clicked()
 {
     goBack();
+}
+
+void MainWindow::refreshManageAccountsTable() {
+    ui->manageAccountsTableWidget->clearContents();
+    ui->manageAccountsTableWidget->setRowCount(0);
+
+    UserController userController;
+    std::vector<User> users = userController.getUsers();
+
+    for (const User& user : users) {
+        int currentRow = ui->manageAccountsTableWidget->rowCount();
+        ui->manageAccountsTableWidget->insertRow(currentRow);
+
+        QTableWidgetItem* idItem = new QTableWidgetItem(QString::number(user.getId()));
+        QTableWidgetItem* nameItem = new QTableWidgetItem(user.getName());
+        QTableWidgetItem* roleItem = new QTableWidgetItem(user.getRole() == 0 ? "Gracz" : "Admin");
+
+        ui->manageAccountsTableWidget->setItem(currentRow, 0, idItem);
+        ui->manageAccountsTableWidget->setItem(currentRow, 1, roleItem);
+        ui->manageAccountsTableWidget->setItem(currentRow, 2, nameItem);
+    }
 }
 
 // ---------------- UPDATE ACCOUNT PAGE ----------------
