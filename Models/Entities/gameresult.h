@@ -8,7 +8,6 @@ class GameResult {
 private:
     int _id;
     int _points;
-    //QString _hintUsed; // np. "1,0,1" jako ciąg znaków
     QDateTime _startDateTime;
     QDateTime _endDateTime;
     int _boardSize;
@@ -22,7 +21,6 @@ public:
     int getPoints() const;
     void setPoints(int points);
 
-    //QString getHintUsed() const;
     QDateTime getStartDateTime() const;
     void setStartDateTime(const QDateTime& start);
 

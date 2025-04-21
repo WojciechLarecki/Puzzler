@@ -9,6 +9,7 @@
 #include <QRandomGenerator>
 #include <algorithm>
 #include <QDebug>
+#include <QTimer>
 
 
 #define HOME_PAGE 0
@@ -51,6 +52,15 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->adminRoleRadioButton, &QRadioButton::toggled, this, &MainWindow::validateCreateAccountForm);
 
     connect(ui->returnGameResultsButton, &QPushButton::clicked, this, &MainWindow::goBack);
+
+    // gamePage
+    // timer
+    gameTimer = new QTimer(this);
+    connect(gameTimer, &QTimer::timeout, this, &MainWindow::updateTimer);
+    connect(ui->resetGameButton, &QPushButton::clicked, this, [=]() {
+        initializeGameBoard(boardSize);
+    });
+
 
     try {
         DatabaseController db;
@@ -370,7 +380,7 @@ void MainWindow::on_customDifficultyButton_clicked()
     int value = ui->customDifficultySpin->value();
 
     // get 'n' tiles game
-    initializeGameBoard(value;
+    initializeGameBoard(value);
     jumpTo(GAME_PAGE);
 }
 
@@ -443,7 +453,7 @@ void MainWindow::goBack()
 // --------------GAME METHODS------------
 void MainWindow::initializeGameBoard(int size) {
     boardSize = size;
-    //clearGameBoard();
+    clearGameBoard();
 
     QVector<int> numbers;
     for (int i = 1; i < size * size; ++i)
@@ -479,6 +489,14 @@ void MainWindow::initializeGameBoard(int size) {
             gameButtons[row][col] = btn;
         }
     }
+
+    // set game start date
+    startDate = QDateTime::currentDateTime();
+
+    // set timer
+    elapsedTime = QTime(0, 0, 0);
+    ui->timeEdit->setTime(elapsedTime);
+    gameTimer->start(1000);
 }
 
 void MainWindow::handleTileClick() {
@@ -486,23 +504,28 @@ void MainWindow::handleTileClick() {
     int row = clicked->property("row").toInt();
     int col = clicked->property("col").toInt();
 
-    // Sprawdź, czy kliknięto sąsiada szarego pola
+    // check if empty tile's neighbour is clicked
     if ((abs(row - emptyRow) == 1 && col == emptyCol) || (abs(col - emptyCol) == 1 && row == emptyRow)) {
         QPushButton* emptyBtn = gameButtons[emptyRow][emptyCol];
 
-        // Przenieś tekst i styl klikniętego do szarego
+        // change to numbered tile
         emptyBtn->setText(clicked->text());
         emptyBtn->setStyleSheet("");
 
-        // Szare pole "wchodzi" w miejsce klikniętego
+        // change to empty tile
         clicked->setText("");
         clicked->setStyleSheet("background-color: gray;");
-
-        // Zaktualizuj pozycję pustego pola
         emptyRow = row;
         emptyCol = col;
 
         if (isSolved()) {
+
+            // set game end date
+            endDate = QDateTime::currentDateTime();
+
+            // stop timer
+            gameTimer->stop();
+
             QMessageBox::information(this, "Gratulacje!", "Udało Ci się rozwiązać układankę!");
         }
     }
@@ -526,3 +549,22 @@ bool MainWindow::isSolved() const {
     }
     return true;
 }
+
+void MainWindow::updateTimer() {
+    elapsedTime = elapsedTime.addSecs(1);
+    ui->timeEdit->setTime(elapsedTime);
+}
+
+void MainWindow::clearGameBoard() {
+    // delete buttons from layout and memory
+    for (auto& row : gameButtons) {
+        for (QPushButton* button : row) {
+            ui->gridLayout->removeWidget(button);
+            delete button;
+        }
+    }
+
+    // clear buttons vector from false references
+    gameButtons.clear();
+}
+

@@ -29,6 +29,7 @@ public:
     void clearGameBoard();
     void handleTileClick();
     bool isSolved() const;
+    void updateTimer();
 
 private slots:
     //----------HOME PAGE---------
@@ -99,5 +100,13 @@ private:
     void resetAccountsPageState();
     void validateCreateAccountForm();
     void goBack();
+
+
+    // GAME PAGE
+    // timer properties
+    QTimer* gameTimer;
+    QTime elapsedTime;
+    QDateTime startDate;
+    QDateTime endDate;
 };
 #endif // MAINWINDOW_H

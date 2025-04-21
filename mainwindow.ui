@@ -107,7 +107,7 @@
          <layout class="QGridLayout" name="gridLayout"/>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="timerGameHorizontalLayout">
+         <layout class="QHBoxLayout" name="endGameHorizontalLayout">
           <item>
            <widget class="QTimeEdit" name="timeEdit">
             <property name="readOnly">
@@ -124,17 +124,6 @@
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QPushButton" name="pushButton">
-            <property name="text">
-             <string>Zatrzymaj grę</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="endGameHorizontalLayout">
           <item>
            <widget class="QPushButton" name="cancelGameButton">
             <property name="text">
