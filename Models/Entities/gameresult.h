@@ -33,6 +33,19 @@ public:
 
     int getUserId() const;
     void setUserId(int userId);
+
+    template<typename T>
+    T calculatePoints() const;
 };
+
+template<typename T>
+T GameResult::calculatePoints() const {
+    T points = _boardSize * 50;
+    int minutes = (_endDateTime.toMSecsSinceEpoch() -
+                   _startDateTime.toMSecsSinceEpoch()) / 60000;
+    points = points - (minutes * 35);
+
+    return points;
+}
 
 #endif // GAMERESULT_H

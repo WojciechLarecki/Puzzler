@@ -550,11 +550,7 @@ void MainWindow::handleTileClick() {
                 game.setStartDateTime(startDate);
 
                 // calculate game result score
-                int points = game.getBoardSize() * 50;
-                int minutes = (game.getEndDateTime().toMSecsSinceEpoch() -
-                               game.getStartDateTime().toMSecsSinceEpoch()) / 60000;
-                points = points - (minutes * 35);
-
+                int points = game.calculatePoints<int>();
                 game.setPoints(points);
                 game.setUserId(loggedUserId);
 
