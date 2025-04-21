@@ -15,7 +15,7 @@ UserRepository::UserRepository() {
     }
 }
 
-bool UserRepository::Add(User user) {
+bool UserRepository::Add(const User& user) {
     QSqlQuery insertQuery;
     insertQuery.prepare("INSERT INTO users (name, role) VALUES (?, ?)");
 
@@ -73,7 +73,7 @@ bool UserRepository::Delete(int id) {
     return true;
 }
 
-bool UserRepository::Update(User newUser) {
+bool UserRepository::Update(const User& newUser) {
     QSqlQuery updateQuery;
     updateQuery.prepare("UPDATE users SET name = ?, role = ? WHERE id = ?");
     updateQuery.addBindValue(newUser.getName());

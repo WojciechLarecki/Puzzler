@@ -5,7 +5,7 @@
 
 GameResultRepository::GameResultRepository() {}
 
-bool GameResultRepository::Add(GameResult gameResult) {
+bool GameResultRepository::Add(const GameResult& gameResult) {
     QSqlQuery query;
     query.prepare(R"(
         INSERT INTO GameResults (points, startDateTime, endDateTime, boardSize, userId)
