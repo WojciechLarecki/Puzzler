@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QStack>
+#include "Models/Entities/user.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -59,11 +60,11 @@ private slots:
     void on_deleteManageAccountsButton_clicked();
     void on_returnManageAccountsButton_clicked();
     void onManageAccountsRowSelected();
-    void refreshManageAccountsTable();
 
     //----------UPDATE ACCOUNT PAGE----------
     void on_createAccountUpdateAccountButton_clicked();
     void on_returnUpdateAccountButton_clicked();
+    void on_updateUpdateAccountButton_clicked();
 
     //----------DIFFICULTY PAGE----------
     void on_easyDifficultyButton_clicked();
@@ -75,6 +76,12 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QStack<int> pageStack;
+
+    // MANAGE ACCOUNTS PAGE
+    void refreshManageAccountsTable();
+
+    // UPDATE ACCOUNT PAGE
+    void fillUpdateAccountPage(User user);
 
     void jumpTo(int pageIndex);
     void refreshAccountsTable();

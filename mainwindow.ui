@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>9</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="homePage">
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -259,10 +259,17 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="1">
+           <widget class="QLabel" name="userIdUpdateAccountLabel">
+            <property name="text">
+             <string>userId</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>
-         <widget class="QPushButton" name="createAccountUpdateAccountButton">
+         <widget class="QPushButton" name="updateUpdateAccountButton">
           <property name="text">
            <string>Zaktualizuj konto</string>
           </property>

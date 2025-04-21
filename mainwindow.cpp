@@ -36,11 +36,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->manageAccountsTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     connect(ui->manageAccountsTableWidget, &QTableWidget::itemSelectionChanged, this, &MainWindow::onManageAccountsRowSelected);
 
+    // updateAccountPage
+    ui->userIdUpdateAccountLabel->setHidden(true);
 
     connect(ui->accountNameAccountCreateLineEdit, &QLineEdit::textChanged, this, &MainWindow::validateCreateAccountForm);
     connect(ui->playerRoleRadioButton, &QRadioButton::toggled, this, &MainWindow::validateCreateAccountForm);
     connect(ui->adminRoleRadioButton, &QRadioButton::toggled, this, &MainWindow::validateCreateAccountForm);
-    //connect(ui->pushButton_2, &QPushButton::clicked, this, &MainWindow::onButton3Cliecked);
 
     connect(ui->returnGameResultsButton, &QPushButton::clicked, this, &MainWindow::goBack);
 
@@ -216,7 +217,29 @@ void MainWindow::on_returnAdminButton_clicked()
 // ---------------- MANAGE ACCOUNTS PAGE ----------------
 void MainWindow::on_editManageAccountsButton_clicked()
 {
-    // edytuj wybrane konto i przejdź do UPDATE_ACCOUNT_PAGE
+    QList<QTableWidgetItem*> selectedItems = ui->manageAccountsTableWidget->selectedItems();
+    if (selectedItems.isEmpty()) {
+        QMessageBox::warning(this, "Błąd", "Nie wybrano żadnego użytkownika.");
+        return;
+    }
+
+    // read selected user
+    int selectedRow = ui->manageAccountsTableWidget->currentRow();
+    QTableWidgetItem* userIdItem = ui->manageAccountsTableWidget->item(selectedRow, 0);
+    QTableWidgetItem* userRoleItem = ui->manageAccountsTableWidget->item(selectedRow, 1);
+    QTableWidgetItem* userNameItem = ui->manageAccountsTableWidget->item(selectedRow, 2);
+
+    User user;
+    user.setId(userIdItem->text().toInt());
+    user.setName(userNameItem->text());
+    if (userRoleItem->text() == "Gracz") {
+        user.setRole(0);
+    }
+    else
+        user.setRole(1);
+
+
+    fillUpdateAccountPage(user);
     jumpTo(UPDATE_ACCOUNT_PAGE);
 }
 
@@ -283,6 +306,33 @@ void MainWindow::on_createAccountUpdateAccountButton_clicked()
 
 void MainWindow::on_returnUpdateAccountButton_clicked()
 {
+    goBack();
+}
+
+void MainWindow::fillUpdateAccountPage(User user) {
+    ui->accountNameUpdateAccountLineEdit->setText(user.getName());
+    QString userIdText = QString::number(user.getId());
+    ui->userIdUpdateAccountLabel->setText(userIdText);
+
+    if (user.getRole() == 0)
+        ui->playerRoleUpdateAccountRadioButton->setChecked(true);
+    else
+        ui->adminRoleAccoutUpdateRadioButton->setChecked(true);
+}
+
+void MainWindow::on_updateUpdateAccountButton_clicked() {
+    User user;
+    user.setName(ui->accountNameUpdateAccountLineEdit->text());
+    user.setId(ui->userIdUpdateAccountLabel->text().toInt());
+
+    if (ui->playerRoleUpdateAccountRadioButton->isChecked())
+        user.setRole(0);
+    else user.setRole(1);
+
+    UserController controller;
+    controller.UpdateUser(user);
+
+    refreshManageAccountsTable();
     goBack();
 }
 
