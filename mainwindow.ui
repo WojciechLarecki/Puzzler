@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="homePage">
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -51,10 +51,44 @@
       <widget class="QWidget" name="gameResultsPage">
        <layout class="QVBoxLayout" name="verticalLayout_11">
         <item>
-         <widget class="QTableWidget" name="gameResultsTableWidget"/>
+         <widget class="QTableWidget" name="gameResultsTableWidget">
+          <column>
+           <property name="text">
+            <string>Id</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Gracz</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Start gry</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Zakończenie gry</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Punkty</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Rozmiar tablicy</string>
+           </property>
+          </column>
+         </widget>
         </item>
         <item>
          <widget class="QPushButton" name="deleteGameResultsButton">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Usuń wynik</string>
           </property>

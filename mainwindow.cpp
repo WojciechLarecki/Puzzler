@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include "./Controllers/databasecontroller.h"
 #include "./Controllers/usercontroller.h"
+#include "./Controllers/gameresultcontroller.h"
 
 #include <QPushButton>
 #include <QVector>
@@ -47,11 +48,16 @@ MainWindow::MainWindow(QWidget *parent)
     // updateAccountPage
     ui->userIdUpdateAccountLabel->setHidden(true);
 
+    // gameResultPage
+    ui->gameResultsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->gameResultsTableWidget->setColumnHidden(0, true); // hide Id column
+    ui->gameResultsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->gameResultsTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+    connect(ui->gameResultsTableWidget, &QTableWidget::itemSelectionChanged, this, &MainWindow::onGameResultsTableRowSelected);
+
     connect(ui->accountNameAccountCreateLineEdit, &QLineEdit::textChanged, this, &MainWindow::validateCreateAccountForm);
     connect(ui->playerRoleRadioButton, &QRadioButton::toggled, this, &MainWindow::validateCreateAccountForm);
     connect(ui->adminRoleRadioButton, &QRadioButton::toggled, this, &MainWindow::validateCreateAccountForm);
-
-    connect(ui->returnGameResultsButton, &QPushButton::clicked, this, &MainWindow::goBack);
 
     // gamePage
     // timer
@@ -80,6 +86,7 @@ MainWindow::~MainWindow()
 // ---------------- HOME PAGE ----------------
 void MainWindow::on_playAsGuestButton_clicked()
 {
+    loggedUserId = -999;
     jumpTo(DIFFICULTY_PAGE);
 }
 
@@ -104,6 +111,7 @@ void MainWindow::on_loginAccountsButton_clicked()
     }
 
     int selectedRow = ui->accountsTableWidget->currentRow();
+    QTableWidgetItem* idItem = ui->accountsTableWidget->item(selectedRow, 0);
     QTableWidgetItem* roleItem = ui->accountsTableWidget->item(selectedRow, 1); // id (0), role (1), name (2)
 
     if (!roleItem) {
@@ -112,6 +120,7 @@ void MainWindow::on_loginAccountsButton_clicked()
     }
 
     QString roleText = roleItem->text();
+    loggedUserId = idItem->text().toInt();
 
     if (roleText == "Gracz") {
         jumpTo(PLAYER_PAGE);
@@ -198,7 +207,9 @@ void MainWindow::on_playAsPlayerButton_clicked()
 
 void MainWindow::on_showScoresButton_clicked()
 {
+    // player cannot delete gameresults
     ui->deleteGameResultsButton->setVisible(false);
+    refreshGameResultsTableWidget();
     jumpTo(GAME_RESULTS_PAGE);
 }
 
@@ -215,6 +226,9 @@ void MainWindow::on_playAdminButton_clicked()
 
 void MainWindow::on_showScoresAdminButton_clicked()
 {
+    // admin can delete gameresults
+    ui->deleteGameResultsButton->setVisible(true);
+    refreshGameResultsTableWidget();
     jumpTo(GAME_RESULTS_PAGE);
 }
 
@@ -526,7 +540,28 @@ void MainWindow::handleTileClick() {
             // stop timer
             gameTimer->stop();
 
-            QMessageBox::information(this, "Gratulacje!", "Udało Ci się rozwiązać układankę!");
+            if (loggedUserId == -999) {
+                QMessageBox::information(this, "Gratulacje!", "Udało Ci się rozwiązać układankę!");
+            }
+            else {
+                GameResult game;
+                game.setBoardSize(boardSize);
+                game.setEndDateTime(endDate);
+                game.setStartDateTime(startDate);
+
+                // calculate game result score
+                int points = game.getBoardSize() * 50;
+                int minutes = (game.getEndDateTime().toMSecsSinceEpoch() -
+                               game.getStartDateTime().toMSecsSinceEpoch()) / 60000;
+                points = points - (minutes * 35);
+
+                game.setPoints(points);
+                game.setUserId(loggedUserId);
+
+                GameResultController gamesController;
+                gamesController.AddResult(game);
+                QMessageBox::information(this, "Gratulacje!", "Udało Ci się rozwiązać układankę! w");
+            }
         }
     }
 }
@@ -567,4 +602,62 @@ void MainWindow::clearGameBoard() {
     // clear buttons vector from false references
     gameButtons.clear();
 }
+
+// --------------GAME RESULTS PAGE------------
+void MainWindow::on_returnGameResultsButton_clicked() {
+    goBack();
+}
+
+void MainWindow::on_deleteGameResultsButton_clicked() {
+    // read table
+    QList<QTableWidgetItem*> selectedItems = ui->gameResultsTableWidget->selectedItems();
+    if (selectedItems.isEmpty()) {
+        QMessageBox::warning(this, "Błąd", "Nie wybrano żadnej gry.");
+        return;
+    }
+
+    int selectedRow = ui->gameResultsTableWidget->currentRow();
+    QTableWidgetItem* gameIdItem = ui->gameResultsTableWidget->item(selectedRow, 0);
+
+    int gameId = gameIdItem->text().toInt();
+
+    GameResultController games;
+    games.DeleteResult(gameId);
+
+    // reset page state
+    refreshGameResultsTableWidget();
+    ui->deleteGameResultsButton->setEnabled(false);
+}
+
+void MainWindow::refreshGameResultsTableWidget() {
+    ui->gameResultsTableWidget->clearContents();
+    ui->gameResultsTableWidget->setRowCount(0);
+
+    GameResultController games;
+    auto results = games.getResults();
+
+    for (const GameResultTableDTO& result : results) {
+        int currentRow = ui->gameResultsTableWidget->rowCount();
+        ui->gameResultsTableWidget->insertRow(currentRow);
+
+        QTableWidgetItem* idItem = new QTableWidgetItem(QString::number(result.getGame().getId()));
+        QTableWidgetItem* nameItem = new QTableWidgetItem(result.getUserName());
+        QTableWidgetItem* startDateItem = new QTableWidgetItem(result.getGame().getStartDateTime().toString("dd.MM.yyyy hh:ss:mm"));
+        QTableWidgetItem* endDateItem = new QTableWidgetItem(result.getGame().getEndDateTime().toString("dd.MM.yyyy hh:ss:mm"));
+        QTableWidgetItem* pointsItem = new QTableWidgetItem(QString::number(result.getGame().getPoints()));
+        QTableWidgetItem* boadItem = new QTableWidgetItem(QString::number(result.getGame().getBoardSize()));
+
+        ui->gameResultsTableWidget->setItem(currentRow, 0, idItem);
+        ui->gameResultsTableWidget->setItem(currentRow, 1, nameItem);
+        ui->gameResultsTableWidget->setItem(currentRow, 2, startDateItem);
+        ui->gameResultsTableWidget->setItem(currentRow, 3, endDateItem);
+        ui->gameResultsTableWidget->setItem(currentRow, 4, pointsItem);
+        ui->gameResultsTableWidget->setItem(currentRow, 5, boadItem);
+    }
+}
+
+void MainWindow::onGameResultsTableRowSelected() {
+    ui->deleteGameResultsButton->setEnabled(true);
+}
+
 

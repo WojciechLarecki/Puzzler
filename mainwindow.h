@@ -85,9 +85,14 @@ private slots:
     void on_customDifficultyButton_clicked();
     void on_returnDifficultyButton_clicked();
 
+    //----------GAME RESULTS PAGE--------
+    void on_returnGameResultsButton_clicked();
+    void on_deleteGameResultsButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QStack<int> pageStack;
+    int loggedUserId = -999;
 
     // MANAGE ACCOUNTS PAGE
     void refreshManageAccountsTable();
@@ -101,6 +106,9 @@ private:
     void validateCreateAccountForm();
     void goBack();
 
+    // GAME RESULTS PAGE
+    void refreshGameResultsTableWidget();
+    void onGameResultsTableRowSelected();
 
     // GAME PAGE
     // timer properties

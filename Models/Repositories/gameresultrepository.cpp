@@ -8,14 +8,15 @@ GameResultRepository::GameResultRepository() {}
 bool GameResultRepository::Add(GameResult gameResult) {
     QSqlQuery query;
     query.prepare(R"(
-        INSERT INTO GameResult (points, startDateTime, endDateTime, boardSize)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO GameResults (points, startDateTime, endDateTime, boardSize, userId)
+        VALUES (?, ?, ?, ?, ?)
     )");
 
     query.addBindValue(gameResult.getPoints());
     query.addBindValue(gameResult.getStartDateTime().toString(Qt::ISODate));
     query.addBindValue(gameResult.getEndDateTime().toString(Qt::ISODate));
     query.addBindValue(gameResult.getBoardSize());
+    query.addBindValue(gameResult.getUserId());
 
     if (!query.exec()) {
         throw std::runtime_error("Error while creating Users table: " + query.lastError().text().toStdString());
@@ -27,12 +28,12 @@ bool GameResultRepository::Add(GameResult gameResult) {
 bool GameResultRepository::Delete(int id) {
     QSqlQuery query;
     query.prepare(R"(
-        DELETE FROM GameResult WHERE id = ?
+        DELETE FROM GameResults WHERE id = ?
     )");
     query.addBindValue(id);
 
     if (!query.exec()) {
-        throw std::runtime_error("Error while deleting GameResult: " + query.lastError().text().toStdString());
+        throw std::runtime_error("Error while deleting GameResults: " + query.lastError().text().toStdString());
     }
 
     return query.numRowsAffected() > 0;
@@ -41,7 +42,7 @@ bool GameResultRepository::Delete(int id) {
 std::vector<GameResult> GameResultRepository::GetAll() {
     std::vector<GameResult> results;
 
-    QSqlQuery query("SELECT id, points, startDateTime, endDateTime, boardSize, userId FROM GameResult");
+    QSqlQuery query("SELECT id, points, startDateTime, endDateTime, boardSize, userId FROM GameResults");
 
     while (query.next()) {
         GameResult result;
