@@ -4,6 +4,13 @@
 #include "./Controllers/databasecontroller.h"
 #include "./Controllers/usercontroller.h"
 
+#include <QPushButton>
+#include <QVector>
+#include <QRandomGenerator>
+#include <algorithm>
+#include <QDebug>
+
+
 #define HOME_PAGE 0
 #define GAME_RESULTS_PAGE 1
 #define GAME_PAGE 2
@@ -63,7 +70,7 @@ MainWindow::~MainWindow()
 // ---------------- HOME PAGE ----------------
 void MainWindow::on_playAsGuestButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(DIFFICULTY_PAGE);
+    jumpTo(DIFFICULTY_PAGE);
 }
 
 void MainWindow::on_exitButton_clicked()
@@ -74,7 +81,7 @@ void MainWindow::on_exitButton_clicked()
 void MainWindow::on_loginButton_clicked()
 {
     resetAccountsPageState();
-    ui->stackedWidget->setCurrentIndex(ACCOUNTS_PAGE);
+    jumpTo(ACCOUNTS_PAGE);
 }
 
 // ---------------- ACCOUNTS PAGE ----------------
@@ -339,27 +346,32 @@ void MainWindow::on_updateUpdateAccountButton_clicked() {
 // ---------------- DIFFICULTY PAGE ----------------
 void MainWindow::on_easyDifficultyButton_clicked()
 {
-    // przygotuj planszę np. 3x3
-    ui->stackedWidget->setCurrentIndex(GAME_PAGE);
+    // get 3x3 tiles game
+    initializeGameBoard(3);
+    jumpTo(GAME_PAGE);
 }
 
 void MainWindow::on_normalDifficultyButton_clicked()
 {
-    // przygotuj planszę np. 4x4
-    ui->stackedWidget->setCurrentIndex(GAME_PAGE);
+    // get 4x4 tiles game
+    initializeGameBoard(4);
+    jumpTo(GAME_PAGE);
 }
 
 void MainWindow::on_hardDifficultyButton_clicked()
 {
-    // przygotuj planszę np. 5x5
-    ui->stackedWidget->setCurrentIndex(GAME_PAGE);
+    // get 5x5 tiles game
+    initializeGameBoard(5);
+    jumpTo(GAME_PAGE);
 }
 
 void MainWindow::on_customDifficultyButton_clicked()
 {
     int value = ui->customDifficultySpin->value();
-    // przygotuj planszę nxn, gdzie n = value
-    ui->stackedWidget->setCurrentIndex(GAME_PAGE);
+
+    // get 'n' tiles game
+    initializeGameBoard(value;
+    jumpTo(GAME_PAGE);
 }
 
 void MainWindow::on_returnDifficultyButton_clicked()
@@ -426,4 +438,91 @@ void MainWindow::goBack()
     } else {
         ui->stackedWidget->setCurrentIndex(HOME_PAGE);
     }
+}
+
+// --------------GAME METHODS------------
+void MainWindow::initializeGameBoard(int size) {
+    boardSize = size;
+    //clearGameBoard();
+
+    QVector<int> numbers;
+    for (int i = 1; i < size * size; ++i)
+        numbers.append(i);
+    numbers.append(0); // 0 to szare puste pole
+
+    // suffle numbers to make a game
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::shuffle(numbers.begin(), numbers.end(), std::default_random_engine(seed));
+
+    gameButtons.resize(size);
+    QGridLayout* grid = ui->gridLayout;
+
+    for (int row = 0; row < size; ++row) {
+        gameButtons[row].resize(size);
+        for (int col = 0; col < size; ++col) {
+            int val = numbers[row * size + col];
+            QPushButton* btn = new QPushButton(val == 0 ? "" : QString::number(val));
+            btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            btn->setFont(QFont("Arial", 16, QFont::Bold));
+
+            if (val == 0) {
+                btn->setStyleSheet("background-color: gray;");
+                emptyRow = row;
+                emptyCol = col;
+            }
+
+            btn->setProperty("row", row);
+            btn->setProperty("col", col);
+            connect(btn, &QPushButton::clicked, this, &MainWindow::handleTileClick);
+
+            grid->addWidget(btn, row, col);
+            gameButtons[row][col] = btn;
+        }
+    }
+}
+
+void MainWindow::handleTileClick() {
+    QPushButton* clicked = qobject_cast<QPushButton*>(sender());
+    int row = clicked->property("row").toInt();
+    int col = clicked->property("col").toInt();
+
+    // Sprawdź, czy kliknięto sąsiada szarego pola
+    if ((abs(row - emptyRow) == 1 && col == emptyCol) || (abs(col - emptyCol) == 1 && row == emptyRow)) {
+        QPushButton* emptyBtn = gameButtons[emptyRow][emptyCol];
+
+        // Przenieś tekst i styl klikniętego do szarego
+        emptyBtn->setText(clicked->text());
+        emptyBtn->setStyleSheet("");
+
+        // Szare pole "wchodzi" w miejsce klikniętego
+        clicked->setText("");
+        clicked->setStyleSheet("background-color: gray;");
+
+        // Zaktualizuj pozycję pustego pola
+        emptyRow = row;
+        emptyCol = col;
+
+        if (isSolved()) {
+            QMessageBox::information(this, "Gratulacje!", "Udało Ci się rozwiązać układankę!");
+        }
+    }
+}
+
+bool MainWindow::isSolved() const {
+    int count = 1;
+    for (int row = 0; row < boardSize; ++row) {
+        for (int col = 0; col < boardSize; ++col) {
+            QPushButton* btn = gameButtons[row][col];
+            QString text = btn->text();
+
+            if (row == boardSize - 1 && col == boardSize - 1) {
+                return text.isEmpty(); // empty tile should be at last position
+            }
+
+            if (text.toInt() != count)
+                return false;
+            count++;
+        }
+    }
+    return true;
 }

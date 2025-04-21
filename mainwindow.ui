@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>4</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="homePage">
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -330,7 +330,14 @@
            </widget>
           </item>
           <item>
-           <widget class="QSpinBox" name="customDifficultySpin"/>
+           <widget class="QSpinBox" name="customDifficultySpin">
+            <property name="minimum">
+             <number>2</number>
+            </property>
+            <property name="maximum">
+             <number>10</number>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>

@@ -5,6 +5,8 @@
 #include <QStack>
 #include "Models/Entities/user.h"
 
+#include <QPushButton>
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -18,6 +20,15 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    int boardSize;
+    QVector<QVector<QPushButton*>> gameButtons;
+    int emptyRow, emptyCol;
+
+    void initializeGameBoard(int size);
+    void clearGameBoard();
+    void handleTileClick();
+    bool isSolved() const;
 
 private slots:
     //----------HOME PAGE---------
