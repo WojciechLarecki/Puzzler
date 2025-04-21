@@ -13,7 +13,6 @@ bool GameResultRepository::Add(GameResult gameResult) {
     )");
 
     query.addBindValue(gameResult.getPoints());
-    //query.addBindValue(_hintUsed);
     query.addBindValue(gameResult.getStartDateTime().toString(Qt::ISODate));
     query.addBindValue(gameResult.getEndDateTime().toString(Qt::ISODate));
     query.addBindValue(gameResult.getBoardSize());
@@ -23,4 +22,39 @@ bool GameResultRepository::Add(GameResult gameResult) {
     }
 
     return true;
+}
+
+bool GameResultRepository::Delete(int id) {
+    QSqlQuery query;
+    query.prepare(R"(
+        DELETE FROM GameResult WHERE id = ?
+    )");
+    query.addBindValue(id);
+
+    if (!query.exec()) {
+        throw std::runtime_error("Error while deleting GameResult: " + query.lastError().text().toStdString());
+    }
+
+    return query.numRowsAffected() > 0;
+}
+
+std::vector<GameResult> GameResultRepository::GetAll() {
+    std::vector<GameResult> results;
+
+    QSqlQuery query("SELECT id, points, startDateTime, endDateTime, boardSize, userId FROM GameResult");
+
+    while (query.next()) {
+        GameResult result;
+
+        result.setId(query.value("id").toInt());
+        result.setPoints(query.value("points").toInt());
+        result.setStartDateTime(QDateTime::fromString(query.value("startDateTime").toString(), Qt::ISODate));
+        result.setEndDateTime(QDateTime::fromString(query.value("endDateTime").toString(), Qt::ISODate));
+        result.setBoardSize(query.value("boardSize").toInt());
+        result.setUserId(query.value("userId").toInt());
+
+        results.push_back(result);
+    }
+
+    return results;
 }

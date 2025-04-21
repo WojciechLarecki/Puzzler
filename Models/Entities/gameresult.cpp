@@ -16,3 +16,6 @@ void GameResult::setPoints(int points) { _points = points; }
 void GameResult::setStartDateTime(const QDateTime& start) { _startDateTime = start; }
 void GameResult::setEndDateTime(const QDateTime& end) { _endDateTime = end; }
 void GameResult::setBoardSize(int size) { _boardSize = size; }
+
+int GameResult::getUserId() const { return _userId; }
+void GameResult::setUserId(int userId) { _userId = userId; }

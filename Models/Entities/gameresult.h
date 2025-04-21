@@ -11,6 +11,7 @@ private:
     QDateTime _startDateTime;
     QDateTime _endDateTime;
     int _boardSize;
+    int _userId;
 
 public:
     GameResult();
@@ -29,6 +30,9 @@ public:
 
     int getBoardSize() const;
     void setBoardSize(int size);
+
+    int getUserId() const;
+    void setUserId(int userId);
 };
 
 #endif // GAMERESULT_H
