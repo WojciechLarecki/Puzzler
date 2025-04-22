@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="homePage">
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -125,13 +125,6 @@
            <widget class="QPushButton" name="hintGameButton">
             <property name="text">
              <string>wskazówka</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="infoGameButton">
-            <property name="text">
-             <string>Info</string>
             </property>
            </widget>
           </item>

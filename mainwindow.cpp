@@ -4,6 +4,7 @@
 #include "./Controllers/databasecontroller.h"
 #include "./Controllers/usercontroller.h"
 #include "./Controllers/gameresultcontroller.h"
+#include "./Controllers/hintscontroller.h"
 
 #include <QPushButton>
 #include <QVector>
@@ -186,7 +187,9 @@ void MainWindow::on_stepGameButton_clicked()
 
 void MainWindow::on_hintGameButton_clicked()
 {
-    // pokaż podpowiedź
+    HintsController hints;
+    hints.AddStartDateHint(startDate);
+    QMessageBox::information(this, "Informacja", hints.GetRandom()->getHint());
 }
 
 void MainWindow::on_infoGameButton_clicked()
@@ -505,7 +508,7 @@ void MainWindow::initializeGameBoard(int size) {
     }
 
     // set game start date
-    startDate = QDateTime::currentDateTime();
+    startDate = QDateTime::currentDateTime().toLocalTime();
 
     // set timer
     elapsedTime = QTime(0, 0, 0);
@@ -535,7 +538,7 @@ void MainWindow::handleTileClick() {
         if (isSolved()) {
 
             // set game end date
-            endDate = QDateTime::currentDateTime();
+            endDate = QDateTime::currentDateTime().toLocalTime();
 
             // stop timer
             gameTimer->stop();
