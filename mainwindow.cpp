@@ -32,6 +32,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(HOME_PAGE);
 
+    //set property styles
+    ui->difficultyLabel->setProperty("heading", true);
+
     // accountsTableWidget
     ui->accountsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->accountsTableWidget->setColumnHidden(0, true); // hide Id column
@@ -490,7 +493,7 @@ void MainWindow::initializeGameBoard(int size) {
             int val = numbers[row * size + col];
             QPushButton* btn = new QPushButton(val == 0 ? "" : QString::number(val));
             btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            btn->setFont(QFont("Arial", 16, QFont::Bold));
+            btn->setProperty("tile", "true");
 
             if (val == 0) {
                 btn->setStyleSheet("background-color: gray;");
