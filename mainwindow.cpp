@@ -68,10 +68,6 @@ MainWindow::MainWindow(QWidget *parent)
     // timer
     gameTimer = new QTimer(this);
     connect(gameTimer, &QTimer::timeout, this, &MainWindow::updateTimer);
-    connect(ui->resetGameButton, &QPushButton::clicked, this, [=]() {
-        initializeGameBoard(boardSize);
-    });
-
 
     try {
         DatabaseController db;
@@ -171,22 +167,12 @@ void MainWindow::on_returnUpsertAccountButton_clicked()
 // ---------------- GAME PAGE ----------------
 void MainWindow::on_cancelGameButton_clicked()
 {
-    jumpTo(HOME_PAGE); // lub DIFFICULTY_PAGE, zależnie od kontekstu
+    goBack();
 }
 
 void MainWindow::on_resetGameButton_clicked()
 {
-    // zresetuj planszę
-}
-
-void MainWindow::on_solutionGameButton_clicked()
-{
-    // pokaż rozwiązanie
-}
-
-void MainWindow::on_stepGameButton_clicked()
-{
-    // pokaż jeden ruch rozwiązania
+    initializeGameBoard(boardSize);
 }
 
 void MainWindow::on_hintGameButton_clicked()
@@ -199,11 +185,6 @@ void MainWindow::on_hintGameButton_clicked()
 void MainWindow::on_infoGameButton_clicked()
 {
     QMessageBox::information(this, "Informacja", "Ułóż liczby od 1 do n.");
-}
-
-void MainWindow::on_pushButton_clicked()
-{
-    // zatrzymaj grę
 }
 
 // ---------------- PLAYER PAGE ----------------
@@ -301,8 +282,6 @@ void MainWindow::on_deleteManageAccountsButton_clicked()
     refreshManageAccountsTable();
     ui->deleteManageAccountsButton->setEnabled(false);
     ui->editManageAccountsButton->setEnabled(false);
-
-    //TODO dodać nie usuwanie swojego konta.
 }
 
 void MainWindow::onManageAccountsRowSelected() {
@@ -337,11 +316,6 @@ void MainWindow::refreshManageAccountsTable() {
 }
 
 // ---------------- UPDATE ACCOUNT PAGE ----------------
-void MainWindow::on_createAccountUpdateAccountButton_clicked()
-{
-    // zapisz zmiany konta
-}
-
 void MainWindow::on_returnUpdateAccountButton_clicked()
 {
     goBack();
@@ -559,6 +533,7 @@ void MainWindow::handleTileClick() {
                 gamesController.AddResult(game);
                 QMessageBox::information(this, "Gratulacje!", "Udało Ci się rozwiązać układankę! Twój wynik będzie zapisany do tablicy wyników.");
             }
+            goBack();
         }
     }
 }
@@ -639,8 +614,8 @@ void MainWindow::refreshGameResultsTableWidget() {
 
         QTableWidgetItem* idItem = new QTableWidgetItem(QString::number(result.getGame().getId()));
         QTableWidgetItem* nameItem = new QTableWidgetItem(result.getUserName());
-        QTableWidgetItem* startDateItem = new QTableWidgetItem(result.getGame().getStartDateTime().toString("dd.MM.yyyy hh:ss:mm"));
-        QTableWidgetItem* endDateItem = new QTableWidgetItem(result.getGame().getEndDateTime().toString("dd.MM.yyyy hh:ss:mm"));
+        QTableWidgetItem* startDateItem = new QTableWidgetItem(result.getGame().getStartDateTime().toString("dd.MM.yyyy hh:mm:ss"));
+        QTableWidgetItem* endDateItem = new QTableWidgetItem(result.getGame().getEndDateTime().toString("dd.MM.yyyy hh:mm:ss"));
         QTableWidgetItem* pointsItem = new QTableWidgetItem(QString::number(result.getGame().getPoints()));
         QTableWidgetItem* boadItem = new QTableWidgetItem(QString::number(result.getGame().getBoardSize()));
 

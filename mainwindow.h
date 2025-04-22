@@ -57,6 +57,13 @@ public:
      */
     bool isSolved() const;
 
+    /**
+     * @brief Aktualizuje zegar w trakcie gry.
+     *
+     * Zwiększa czas rozgrywki, aktualizując wyświetlany czas w oknie gry.
+     */
+    void updateTimer();
+
 private slots:
     //----------HOME PAGE---------
     void on_playAsGuestButton_clicked();
@@ -76,11 +83,8 @@ private slots:
     //----------GAME PAGE----------
     void on_cancelGameButton_clicked();
     void on_resetGameButton_clicked();
-    void on_solutionGameButton_clicked();
-    void on_stepGameButton_clicked();
     void on_hintGameButton_clicked();
     void on_infoGameButton_clicked();
-    void on_pushButton_clicked(); // zatrzymaj grę
 
     //----------PLAYER PAGE----------
     void on_playAsPlayerButton_clicked();
@@ -100,7 +104,6 @@ private slots:
     void onManageAccountsRowSelected();
 
     //----------UPDATE ACCOUNT PAGE----------
-    void on_createAccountUpdateAccountButton_clicked();
     void on_returnUpdateAccountButton_clicked();
     void on_updateUpdateAccountButton_clicked();
 
