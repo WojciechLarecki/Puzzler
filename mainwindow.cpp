@@ -5,6 +5,7 @@
 #include "./Controllers/usercontroller.h"
 #include "./Controllers/gameresultcontroller.h"
 #include "./Controllers/hintscontroller.h"
+#include "./Controllers/gamecontroller.h"
 
 #include <QPushButton>
 #include <QVector>
@@ -475,14 +476,8 @@ void MainWindow::initializeGameBoard(int size) {
     boardSize = size;
     clearGameBoard();
 
-    QVector<int> numbers;
-    for (int i = 1; i < size * size; ++i)
-        numbers.append(i);
-    numbers.append(0); // 0 to szare puste pole
-
-    // suffle numbers to make a game
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::shuffle(numbers.begin(), numbers.end(), std::default_random_engine(seed));
+    GameController gCtrl;
+    QVector<int> numbers = gCtrl.getGameCombination(size);
 
     gameButtons.resize(size);
     QGridLayout* grid = ui->gridLayout;
@@ -562,7 +557,7 @@ void MainWindow::handleTileClick() {
 
                 GameResultController gamesController;
                 gamesController.AddResult(game);
-                QMessageBox::information(this, "Gratulacje!", "Udało Ci się rozwiązać układankę! w");
+                QMessageBox::information(this, "Gratulacje!", "Udało Ci się rozwiązać układankę! Twój wynik będzie zapisany do tablicy wyników.");
             }
         }
     }

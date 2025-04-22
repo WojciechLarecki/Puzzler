@@ -21,15 +21,41 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    int boardSize;
-    QVector<QVector<QPushButton*>> gameButtons;
-    int emptyRow, emptyCol;
+    int boardSize; /**< Rozmiar planszy gry (np. 3x3, 4x4). */
+    QVector<QVector<QPushButton*>> gameButtons; /**< Wektor przycisków odpowiadających za kafelki na planszy. */
+    int emptyRow, emptyCol; /**< Indeksy pustego kafelka na planszy. */
 
+    /**
+     * @brief Inicjalizuje planszę gry.
+     *
+     * Ustala rozmiar planszy oraz ustawia odpowiednią liczbę przycisków w układzie.
+     *
+     * @param size Rozmiar planszy.
+     */
     void initializeGameBoard(int size);
+
+    /**
+     * @brief Czyści aktualną planszę gry.
+     *
+     * Usuwa wszystkie elementy na planszy i resetuje jej stan.
+     */
     void clearGameBoard();
+
+    /**
+     * @brief Obsługuje kliknięcie w kafelek.
+     *
+     * Po kliknięciu w kafelek, aktualizuje planszę i sprawdza stan gry.
+     */
     void handleTileClick();
+
+    /**
+     * @brief Sprawdza, czy gra została rozwiązana.
+     *
+     * Zwraca wartość logiczną informującą, czy wszystkie kafelki są w odpowiednim porządku.
+     *
+     * @return bool True jeśli gra jest rozwiązana, false w przeciwnym razie.
+     */
     bool isSolved() const;
-    void updateTimer();
 
 private slots:
     //----------HOME PAGE---------
@@ -90,31 +116,30 @@ private slots:
     void on_deleteGameResultsButton_clicked();
 
 private:
-    Ui::MainWindow *ui;
-    QStack<int> pageStack;
-    int loggedUserId = -999;
+    Ui::MainWindow *ui; /**< Wskaźnik interfejsu użytkonika. */
+    QStack<int> pageStack; /**< Stos do zarządzania historią przejść między stronami. */
+    int loggedUserId = -999; /**< Identyfikator zalogowanego użytkownika. */
 
     // MANAGE ACCOUNTS PAGE
-    void refreshManageAccountsTable();
+    void refreshManageAccountsTable(); /**< Odświeża tabelę zarządzania kontami. */
 
     // UPDATE ACCOUNT PAGE
-    void fillUpdateAccountPage(User user);
+    void fillUpdateAccountPage(User user); /**< Wypełnia formularz aktualizacji konta użytkownika danymi. */
 
-    void jumpTo(int pageIndex);
-    void refreshAccountsTable();
-    void resetAccountsPageState();
-    void validateCreateAccountForm();
-    void goBack();
+    void jumpTo(int pageIndex); /**< Przechodzi do strony o danym indeksie. */
+    void refreshAccountsTable(); /**< Odświeża tabelę kont użytkowników. */
+    void resetAccountsPageState(); /**< Resetuje stan strony wyświetlającej konta użytkowników. */
+    void validateCreateAccountForm(); /**< Waliduje formularz tworzenia nowego konta. */
+    void goBack(); /**< Wróć do poprzedniej strony. */
 
     // GAME RESULTS PAGE
-    void refreshGameResultsTableWidget();
-    void onGameResultsTableRowSelected();
+    void refreshGameResultsTableWidget(); /**< Odświeża tabelę wyników gry. */
+    void onGameResultsTableRowSelected(); /**< Obsługuje wybór wiersza w tabeli wyników gry. */
 
     // GAME PAGE
-    // timer properties
-    QTimer* gameTimer;
-    QTime elapsedTime;
-    QDateTime startDate;
-    QDateTime endDate;
+    QTimer* gameTimer; /**< Wskaźnik na timer gry. */
+    QTime elapsedTime; /**< Czas, który upłynął od rozpoczęcia gry. */
+    QDateTime startDate; /**< Czas rozpoczęcia gry. */
+    QDateTime endDate; /**< Czas zakończenia gry. */
 };
 #endif // MAINWINDOW_H
